@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, CheckCircle2, XCircle, Clock, Search, Filter, Download, AlertTriangle, Alert } from 'lucide-react';
+import { Calendar, CheckCircle2, XCircle, Clock, Search, Filter, Download, AlertTriangle } from 'lucide-react';
 import { Alert } from '@/components/ui/alert';
 
 export default function HRAttendance() {
