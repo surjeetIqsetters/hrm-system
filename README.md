@@ -38,7 +38,7 @@ A comprehensive, modern HR management system built with Next.js, featuring emplo
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/surjeetIqsetters/hrm-system.git
    cd hrm-system
    ```
 
