@@ -98,10 +98,10 @@ export default function Home() {
     }
   };
 
-  // Show loading while checking authentication
-  if (!hasCheckedAuth || auth.status === 'loading') {
+  // Show loading while checking authentication or not mounted
+  if (!hasCheckedAuth || auth.status === 'loading' || !isClient) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" suppressHydrationWarning>
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
@@ -110,7 +110,7 @@ export default function Home() {
   // Don't render login form if already authenticated
   if (auth.status === 'authenticated' && auth.user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" suppressHydrationWarning>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p>Redirecting to dashboard...</p>
@@ -120,7 +120,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900" suppressHydrationWarning>
       {/* Header */}
       <header className="border-b bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">

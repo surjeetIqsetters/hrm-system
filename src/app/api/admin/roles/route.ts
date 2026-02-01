@@ -1,46 +1,66 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
+// GET /api/admin/roles - List all roles
 export async function GET() {
   try {
-    const mockRoles = [
-      {
-        id: '1',
-        name: 'Employee',
-        description: 'Standard employee with self-service access',
-        permissions: [
-          { id: '1', module: 'attendance', action: 'read', description: 'View own attendance' },
-          { id: '2', module: 'leave', action: 'write', description: 'Apply for leave' },
-          { id: '3', module: 'payroll', action: 'read', description: 'View payslips' },
-        ],
-        createdAt: '2022-01-01T00:00:00Z',
+    const roles = await prisma.role.findMany({
+      orderBy: {
+        name: 'asc',
       },
-      {
-        id: '2',
-        name: 'HR',
-        description: 'HR manager with people operations access',
-        permissions: [
-          { id: '4', module: 'employees', action: 'read', description: 'View employee data' },
-          { id: '5', module: 'attendance', action: 'approve', description: 'Approve attendance' },
-          { id: '6', module: 'leave', action: 'approve', description: 'Approve leaves' },
-        ],
-        createdAt: '2022-01-01T00:00:00Z',
-      },
-      {
-        id: '3',
-        name: 'Admin',
-        description: 'System administrator with full access',
-        permissions: [
-          { id: '7', module: 'system', action: 'write', description: 'Full system access' },
-          { id: '8', module: 'users', action: 'delete', description: 'Manage users' },
-        ],
-        createdAt: '2022-01-01T00:00:00Z',
-      },
-    ];
+    });
 
-    return NextResponse.json(mockRoles);
+    return NextResponse.json({
+      success: true,
+      data: roles,
+    });
   } catch (error) {
+    console.error('Error fetching roles:', error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { success: false, error: { code: 'INTERNAL_ERROR', message: 'Failed to fetch roles' } },
+      { status: 500 }
+    );
+  }
+}
+
+// POST /api/admin/roles - Create new role
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { name, description, permissions } = body;
+
+    // Check if role name already exists
+    const existingRole = await prisma.role.findUnique({
+      where: { name },
+    });
+
+    if (existingRole) {
+      return NextResponse.json(
+        { success: false, error: { code: 'CONFLICT', message: 'Role name already exists' } },
+        { status: 409 }
+      );
+    }
+
+    const role = await prisma.role.create({
+      data: {
+        name,
+        description,
+        permissions: permissions || [],
+      },
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: role,
+        message: 'Role created successfully',
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Error creating role:', error);
+    return NextResponse.json(
+      { success: false, error: { code: 'INTERNAL_ERROR', message: 'Failed to create role' } },
       { status: 500 }
     );
   }
